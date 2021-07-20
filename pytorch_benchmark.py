@@ -1,8 +1,7 @@
 import sys
 import argparse
-import pandas as pd
 
-from utils import benchmark_pytorch
+from utils import benchmark_pytorch, benchmark_onnx, benchmark_jit
 
 def parseargs(args):
     """
@@ -10,7 +9,7 @@ def parseargs(args):
     """
     parser = argparse.ArgumentParser(description='Simple script for benchmarking inference time on pytorch vision models')
 
-    parser.add_argument('-f', '--framework', choices=['pytorch', 'onnx'], default='pytorch')
+    parser.add_argument('-f', '--framework', choices=['pytorch', 'jit', 'onnx'], default='pytorch')
     parser.add_argument('-m', '--models', nargs='+', default=['alexnet'])
     parser.add_argument('-d', '--devices', nargs='+', default=['cpu'])
     parser.add_argument('-b', '--batch_size', nargs='+', default=[2**i for i in range(5)])
@@ -31,11 +30,15 @@ def main(args=None):
 
     if args.framework == 'pytorch':
         df = benchmark_pytorch(args)
+    elif args.framework == 'jit':
+        df = benchmark_jit(args)
+    elif args.framework == 'annx':
+        df = benchmark_onnx(args)
     else:
         print(f'Framework {args.framework} not supported. Exiting..')
 
     if df is not None and args.export:
-        df.to_csv('results.csv', index=None)
+        df.to_csv(f'results_{args.framework}.csv', index=None)
 
 if __name__ == "__main__":
 

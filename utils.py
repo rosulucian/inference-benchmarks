@@ -33,6 +33,39 @@ def benchmark_pytorch(args):
 
     return df
 
+def benchmark_onnx(args):
+    inf_times, batch_sizes, models, devices = [], [], [], []
+
+    print(f'torch: {torch.__version__}')
+    print(f'torchvision: {torchvision.__version__}')
+
+    for model_name in args.models:
+        if args.verbose:
+            print(f'Running inference for size {args.size}x{args.size} for {model_name}')
+            
+        try:
+            model = getattr(torchvision.models, model_name)
+            model = model(pretrained=False)
+
+            for device in args.devices:
+                t = benchmark(model, device, args.batch_size, size=args.size, verbose=args.verbose)
+                devices += [device] * len(args.batch_size)
+
+                inf_times += t
+                batch_sizes += args.batch_size
+                models += [model_name] * len(args.batch_size)
+
+        except AssertionError as error:
+            print(error)
+
+    df = pd.DataFrame(list(zip(models, devices, batch_sizes, inf_times)), columns=['model', 'device', 'bs', 'time'])
+    df['engine'] = 'onnx'
+
+    return df
+
+def benchmark_jit(args):
+    pass
+
 def benchmark(model, device, batch_sizes, verbose=False, size=224):
     inf_times  = []
     
@@ -57,4 +90,3 @@ def benchmark(model, device, batch_sizes, verbose=False, size=224):
         inf_times.append(inf_time)
         
     return inf_times
-    
