@@ -2,15 +2,10 @@ import torch
 import time
 
 
-def benchmark(model, devices, batch_size, verbose=False, size=224):
-    inf_times = []
-
-    if verbose:
-        print(f'Running inference for size {size}x{size} for {model.__class__}')
-
-    configs = [(device, bs) for device in devices for bs in batch_size]
+def benchmark(model, device, batch_sizes, verbose=False, size=224):
+    inf_times, batch_size  = [], []
     
-    for device, bs in configs:
+    for bs in batch_sizes:
         model.eval()
         model.to(device)
 
@@ -29,5 +24,6 @@ def benchmark(model, devices, batch_size, verbose=False, size=224):
             print(f'{device}-{bs}: {inf_time:.3f} ms')
         
         inf_times.append(inf_time)
+        batch_size.append(bs)
         
-    return inf_times
+    return inf_times, batch_size

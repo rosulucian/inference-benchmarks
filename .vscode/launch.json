@@ -14,6 +14,9 @@
                 "-m",
                 "alexnet",
                 "resnet50",
+                "-d",
+                "cpu",
+                "cuda",
                 "-v",
             ],
         }
