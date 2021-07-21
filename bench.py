@@ -80,6 +80,8 @@ def onnx_inference(session, device, batch_sizes, verbose=False, size=224):
     for bs in batch_sizes:
         x = np.random.rand(bs, 3, 224, 224).astype(np.float32)
 
+        session.run(None, {'input': x})
+
         start = time.time()
         session.run(None, {'input': x})
         inf_time = (time.time() - start) * 1000 / bs

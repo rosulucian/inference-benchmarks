@@ -2,7 +2,7 @@ import sys
 import argparse
 
 from bench import benchmark_pytorch, benchmark_onnx, benchmark_jit
-from utils import export_results
+from utils import export_results, model_choices
 
 def parseargs(args):
     """
@@ -11,7 +11,7 @@ def parseargs(args):
     parser = argparse.ArgumentParser(description='Simple script for benchmarking inference time on pytorch vision models')
 
     parser.add_argument('-f', '--framework', choices=['pytorch', 'jit', 'onnx'], default='pytorch')
-    parser.add_argument('-m', '--models', nargs='+', default=['alexnet'])
+    parser.add_argument('-m', '--models', nargs='+', choices=model_choices, default=['alexnet'])
     parser.add_argument('-d', '--devices', nargs='+', choices=['cuda', 'cpu'], default=['cpu'])
     parser.add_argument('-b', '--batch_size', nargs='+', default=[2**i for i in range(5)])
     parser.add_argument('-e', '--export', action='store_true', default=False)

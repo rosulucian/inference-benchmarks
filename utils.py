@@ -22,7 +22,7 @@ def onnx_model(model_name, base_dir='onnx', size=224):
     dummy_input = torch.rand(1, 3, size, size)
 
     model = getattr(torchvision.models, model_name)
-    model = model(pretrained=False)
+    model = model(pretrained=False).eval()
     
     onnx_file = f'{base_dir}/{model_name}.onnx'
 
@@ -43,3 +43,23 @@ def export_results(df, args, base_dir='results'):
         os.makedirs(base_dir)
     
     df.to_csv(f'results/{args.framework}.csv', index=None)
+
+
+model_choices = [
+    'resnet18',
+    'resnet50',
+    'alexnet',
+    'vgg16',
+    'vgg19',
+    'squeezenet',
+    'densenet',
+    'inception',
+    'googlenet',
+    'shufflenet',
+    'mobilenet_v2',
+    'mobilenet_v3_large',
+    'mobilenet_v3_small',
+    'resnext50_32x4d',
+    'wide_resnet50_2',
+    'mnasnet',
+]
