@@ -37,4 +37,9 @@ def onnx_model(model_name, base_dir='onnx', size=224):
         )
     
     return onnx_file
+
+def export_results(df, args, base_dir='results'):
+    if not os.path.exists(base_dir):
+        os.makedirs(base_dir)
     
+    df.to_csv(f'results/{args.framework}.csv', index=None)

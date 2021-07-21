@@ -2,6 +2,7 @@ import sys
 import argparse
 
 from bench import benchmark_pytorch, benchmark_onnx, benchmark_jit
+from utils import export_results
 
 def parseargs(args):
     """
@@ -38,7 +39,7 @@ def main(args=None):
         print(f'Framework {args.framework} not supported. Exiting..')
 
     if df is not None and args.export:
-        df.to_csv(f'results_{args.framework}.csv', index=None)
+        export_results(df, args)
 
 if __name__ == "__main__":
 
