@@ -1,7 +1,7 @@
 import sys
 import argparse
 
-from utils import benchmark_pytorch, benchmark_onnx, benchmark_jit
+from bench import benchmark_pytorch, benchmark_onnx, benchmark_jit
 
 def parseargs(args):
     """
@@ -11,7 +11,7 @@ def parseargs(args):
 
     parser.add_argument('-f', '--framework', choices=['pytorch', 'jit', 'onnx'], default='pytorch')
     parser.add_argument('-m', '--models', nargs='+', default=['alexnet'])
-    parser.add_argument('-d', '--devices', nargs='+', default=['cpu'])
+    parser.add_argument('-d', '--devices', nargs='+', choices=['cuda', 'cpu'], default=['cpu'])
     parser.add_argument('-b', '--batch_size', nargs='+', default=[2**i for i in range(5)])
     parser.add_argument('-e', '--export', action='store_true', default=False)
     parser.add_argument('-v', '--verbose', action='store_true', default=False)
@@ -32,7 +32,7 @@ def main(args=None):
         df = benchmark_pytorch(args)
     elif args.framework == 'jit':
         df = benchmark_jit(args)
-    elif args.framework == 'annx':
+    elif args.framework == 'onnx':
         df = benchmark_onnx(args)
     else:
         print(f'Framework {args.framework} not supported. Exiting..')
