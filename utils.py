@@ -46,9 +46,9 @@ def export_results(df, args, base_dir='results'):
 
 
 model_choices = [
+    'alexnet',
     'resnet18',
     'resnet50',
-    'alexnet',
     'vgg16',
     'vgg19',
     'squeezenet1_1',
