@@ -115,6 +115,8 @@ def benchmark(args):
 
     print(f'torch: {torch.__version__}')
     print(f'torchvision: {torchvision.__version__}')
+    if args.framework == 'onnx':
+        print(f'onnx rutime: {ort.__version__}')
 
     for model_name in args.models:
         if args.verbose:
@@ -130,6 +132,8 @@ def benchmark(args):
                 batch_sizes += args.batch_size
                 devices += [device] * len(args.batch_size)
                 models += [model_name] * len(args.batch_size)
+
+            del model
 
         except AssertionError as error:
             print(error)

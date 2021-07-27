@@ -11,10 +11,10 @@ def parseargs(args):
     parser = argparse.ArgumentParser(description='Simple script for benchmarking inference time on pytorch vision models')
 
     parser.add_argument('-f', '--framework', choices=['pytorch', 'jit', 'onnx'], default='pytorch')
-    parser.add_argument('-m', '--models', nargs='+', choices=model_choices, default=['alexnet'])
+    parser.add_argument('-m', '--models', nargs='+', choices=model_choices+['all'], default=['alexnet'])
     parser.add_argument('-d', '--devices', nargs='+', choices=['cuda', 'cpu'], default=['cpu'])
-    parser.add_argument('-b', '--batch_size', nargs='+', default=[2**i for i in range(7)])
-    parser.add_argument('-s', '--size', action='store', default=224)
+    parser.add_argument('-b', '--batch_size', action='store', type=int, default=7)
+    parser.add_argument('-s', '--size', action='store', type=int, default=224)
     parser.add_argument('-e', '--export', action='store_true', default=False)
     parser.add_argument('-v', '--verbose', action='store_true', default=False)
 
@@ -26,6 +26,9 @@ def main(args=None):
         args = sys.argv[1:]
 
     args = parseargs(args)
+    args.batch_size = [2**i for i in range(args.batch_size)]
+    if 'all' in args.models:
+        args.models = model_choices
         
     df = benchmark(args)
 
