@@ -13,7 +13,7 @@ def check_onnx_file(base_dir, model_name):
     else:
         return None
 
-def onnx_model(model_name, base_dir='onnx', size=224):
+def onnx_model(model_name, base_dir='models', size=224):
 
     onnx_file = check_onnx_file(base_dir, model_name)
     if onnx_file is not None:
