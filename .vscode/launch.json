@@ -13,17 +13,15 @@
             "args": [
                 "-m",
                 "resnet18",
-                // "all",
                 "squeezenet1_1",
-                // "resnet50",
                 "-d",
                 "cpu",
                 "cuda",
                 "-b",
                 "6",
                 "-e",
-                "-v",
-            ],
+                "-v"
+            ]
         },
         {
             "name": "onnx benchmark",
@@ -31,19 +29,33 @@
             "request": "launch",
             "program": "${workspaceFolder}/benchmark.py",
             "console": "integratedTerminal",
-            "justMyCode":false,
+            "justMyCode": false,
             "args": [
                 "-f",
                 "onnx",
                 "-m",
-                // "all",
                 "resnet50",
                 "-d",
                 "cpu",
                 "cuda",
                 "-e",
-                "-v",
-            ],
+                "-v"
+            ]
+        },
+        {
+            "name": "Docker: Python - General",
+            "type": "docker",
+            "request": "launch",
+            "preLaunchTask": "docker-run: debug",
+            "python": {
+                "pathMappings": [
+                    {
+                        "localRoot": "${workspaceFolder}",
+                        "remoteRoot": "/app"
+                    }
+                ],
+                "projectType": "general"
+            }
         }
     ]
 }

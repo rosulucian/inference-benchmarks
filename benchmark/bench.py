@@ -78,16 +78,17 @@ class Onnx_bench(BenchModel):
 
     def prepare(self, device, args):
         provider = 'CPUExecutionProvider' if device == 'cpu' else 'CUDAExecutionProvider'
+        # provider = 'OpenVINOExecutionProvider' if device == 'cpu' else 'CUDAExecutionProvider'
         self.session = ort.InferenceSession(self.onnx_file, providers=[provider])
+        self.input_name = self.session.get_inputs()[0].name
 
-    def forward(self, x, device, warmup=False):
-        
+    def forward(self, x, device, warmup=False):        
         if warmup is True:
-            self.session.run(None, {'input': x})
+            self.session.run(None, { self.input_name: x})
 
         start = time.time()
         with torch.no_grad():
-            self.session.run(None, {'input': x})
+            self.session.run(None, { self.input_name: x})
 
         inf_time = (time.time() - start) * 1000
 
@@ -105,7 +106,7 @@ def get_model(model_name, args):
         model = Pytorch_bench(model_name, args)
     elif args.framework == 'jit':
         pass
-    elif args.framework == 'onnx':
+    elif args.framework == 'onnx' or args.framework == 'openvino':
         model = Onnx_bench(model_name, args)
 
     return model
@@ -140,5 +141,6 @@ def benchmark(args):
 
     df = pd.DataFrame(list(zip(models, devices, batch_sizes, inf_times)), columns=['model', 'device', 'bs', 'time'])
     df['engine'] = args.framework
+    df['size'] = args.size
 
     return df

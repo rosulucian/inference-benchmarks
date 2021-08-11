@@ -63,4 +63,11 @@ model_choices = [
     'resnext50_32x4d',
     'wide_resnet50_2',
     'mnasnet0_5',
-]
+    ]
+
+framework_choices = [
+    'pytorch', 
+    'jit', 
+    'onnx',
+    'openvino',
+    ]
