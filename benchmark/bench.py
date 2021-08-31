@@ -106,7 +106,8 @@ def get_model(model_name, args):
         model = Pytorch_bench(model_name, args)
     elif args.framework == 'jit':
         pass
-    elif args.framework == 'onnx' or args.framework == 'openvino':
+    # elif args.framework == 'onnx' or args.framework == 'openvino':
+    elif args.framework == 'onnx':
         model = Onnx_bench(model_name, args)
 
     return model
