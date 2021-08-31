@@ -1,13 +1,11 @@
 # inference-benchmarks
 
-Benchmarks for different deep learning inference engines
+Scripts to measure performance rough performance gains for different deep learning inference engines
 
 Models:
-
 - pytorch vision models
 
 Engines:
-
 - PyTorch: CPU, cuda
 - OnnxRuntime: CPU, cuda
 - TorchScript (wip)
