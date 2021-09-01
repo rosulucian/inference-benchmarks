@@ -2,29 +2,32 @@ import os
 import torch
 import torchvision
 
-def check_onnx_file(base_dir, model_name):
-    if not os.path.exists(base_dir):
-        os.makedirs(base_dir)
+def check_cache(models, cache_dir, ext):
+    cached = [f.split('.')[0] for f in os.listdir(cache_dir) if ext in f]
 
-    onnx_file = f'{base_dir}/{model_name}.onnx'
+    cache_hit = [m for m in models if m in cached]
+    not_cached = [m for m in models if m not in cached]
+
+    return cache_hit, not_cached
+
+def is_cached(model_name, cache_dir, ext):
+    if not os.path.exists(cache_dir):
+        os.makedirs(cache_dir)
+
+    onnx_file = f'{cache_dir}/{model_name}.{ext}'
 
     if os.path.isfile(onnx_file):
         return onnx_file
     else:
         return None
 
-def onnx_model(model_name, base_dir='models', size=224):
-
-    onnx_file = check_onnx_file(base_dir, model_name)
-    if onnx_file is not None:
-        return onnx_file
-
+def cache_onnx_model(cache_dir, model_name, size):
     dummy_input = torch.rand(1, 3, size, size)
 
     model = getattr(torchvision.models, model_name)
     model = model(pretrained=False).eval()
     
-    onnx_file = f'{base_dir}/{model_name}.onnx'
+    onnx_file = f'{cache_dir}/{model_name}.onnx'
 
     torch.onnx.export(
         model, 
@@ -35,6 +38,16 @@ def onnx_model(model_name, base_dir='models', size=224):
         dynamic_axes={'input' : {0 : 'batch_size'}, 
                     'output' : {0 : 'batch_size'},}
         )
+
+    return onnx_file
+
+def onnx_model(model_name, cache_dir='models', size=224):
+
+    onnx_file = is_cached(model_name, cache_dir, 'onnx')
+    if onnx_file is not None:
+        return onnx_file
+
+    onnx_file = cache_onnx_model(cache_dir, model_name, size)
     
     return onnx_file
 

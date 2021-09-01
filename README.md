@@ -29,9 +29,6 @@ Docker:
 # create directories
 mkdir models results
 
-# create onnx models files locally (otherwise will block container)
-#
-
 # build container
 docker build -t pytbench -f docker/pytorch.Dockerfile .
 
