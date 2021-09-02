@@ -8,7 +8,7 @@
             "name": "pytorch benchmark",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/benchmark.py",
+            "program": "${workspaceFolder}/benchmark/benchmark.py",
             "console": "integratedTerminal",
             "args": [
                 "-m",
@@ -27,7 +27,7 @@
             "name": "onnx benchmark",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/benchmark.py",
+            "program": "${workspaceFolder}/benchmark/benchmark.py",
             "console": "integratedTerminal",
             "justMyCode": false,
             "args": [
@@ -39,7 +39,45 @@
                 "cpu",
                 "cuda",
                 "-e",
-                "-v"
+                "-v",
+                "-n",
+                "debug"
+            ]
+        },
+        {
+            "name": "script benchmark",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/benchmark/benchmark.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "args": [
+                "-f",
+                "script",
+                "-m",
+                "resnet50",
+                "-d",
+                "cpu",
+                "cuda",
+                "-e",
+                "-v",
+                "-n",
+                "debug"
+            ]
+        },
+        {
+            "name": "serialize",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/benchmark/serialize.py",
+            "console": "integratedTerminal",
+            "args": [
+                "-s",
+                "pytorch",
+                "-m",
+                "alexnet",
+                "-t",
+                "onnx",
             ]
         },
         {
