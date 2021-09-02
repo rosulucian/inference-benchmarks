@@ -27,19 +27,32 @@ def cache_onnx_model(cache_dir, model_name, size):
     model = getattr(torchvision.models, model_name)
     model = model(pretrained=False).eval()
     
-    onnx_file = f'{cache_dir}/{model_name}.onnx'
+    model_file = f'{cache_dir}/{model_name}.onnx'
 
     torch.onnx.export(
         model, 
         dummy_input, 
-        onnx_file,
+        model_file,
         input_names=['input'],
         output_names=['output'],
         dynamic_axes={'input' : {0 : 'batch_size'}, 
                     'output' : {0 : 'batch_size'},}
         )
 
-    return onnx_file
+    return model_file
+
+def cache_script_model(cache_dir, model_name, size):
+    dummy_input = torch.rand(1, 3, size, size)
+
+    model = getattr(torchvision.models, model_name)
+    model = model(pretrained=False).eval()
+    
+    model_file = f'{cache_dir}/{model_name}.script'
+
+    traced_script_module = torch.jit.trace(model, dummy_input)
+    model_file = traced_script_module.save(mode_file)
+
+    return model_file 
 
 def onnx_model(model_name, cache_dir='models', size=224):
 
@@ -55,7 +68,9 @@ def export_results(df, args, base_dir='results'):
     if not os.path.exists(base_dir):
         os.makedirs(base_dir)
     
-    df.to_csv(f'results/{args.framework}.csv', index=None)
+    file_name = args.name if args.name is not None else args.framework
+    
+    df.to_csv(f'results/{args.file_name}.csv', index=None)
 
 
 model_choices = [
@@ -80,7 +95,7 @@ model_choices = [
 
 framework_choices = [
     'pytorch', 
-    'jit', 
+    'script', 
     'onnx',
-    'openvino',
+    # 'openvino',
     ]

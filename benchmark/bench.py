@@ -71,6 +71,39 @@ class Pytorch_bench(BenchModel):
 
         return dummy
 
+class Script_bench(BenchModel):
+    def __init__(self, model_name, args):
+        model = getattr(torchvision.models, model_name)
+        model = model(pretrained=False)
+        model.eval()
+
+        dummy_input = torch.rand(1, 3, args.size, args.size)
+
+        self.model = torch.jit.trace(model, dummy_input)
+        self.size = args.size
+
+    def prepare(self, device, args):
+        pass
+
+    def forward(self, x, device, warmup=False):
+        self.model.to(device)
+
+        if warmup is True:
+            self.model(x)
+
+        start = time.time()
+        with torch.no_grad():
+            self.model(x)
+
+        inf_time = (time.time() - start) * 1000
+
+        return inf_time
+
+    def get_dummy_input(self, bs, device):
+        dummy = torch.rand(bs, 3, self.size, self.size).to(device)
+
+        return dummy
+
 class Onnx_bench(BenchModel):
     def __init__(self, model_name, args):
         self.onnx_file = onnx_model(model_name)
@@ -104,11 +137,12 @@ def get_model(model_name, args):
 
     if args.framework == 'pytorch':
         model = Pytorch_bench(model_name, args)
-    elif args.framework == 'jit':
-        pass
-    # elif args.framework == 'onnx' or args.framework == 'openvino':
+    elif args.framework == 'script':
+        model = Script_bench(model_name, args)
     elif args.framework == 'onnx':
         model = Onnx_bench(model_name, args)
+    else:
+        raise Exception(f'framework not supported {args.framework}')
 
     return model
 

@@ -16,6 +16,7 @@ def parseargs(args):
     parser.add_argument('-b', '--batch_size', action='store', type=int, default=5)
     parser.add_argument('-s', '--size', action='store', type=int, default=224)
     parser.add_argument('-e', '--export', action='store_true', default=False)
+    parser.add_argument('-n', '--name', action='store', type=str, default=None)
     parser.add_argument('-t', '--tag', action='store', type=str, default=None)
     parser.add_argument('-v', '--verbose', action='store_true', default=False)
 
